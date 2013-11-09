@@ -144,8 +144,8 @@ var _ = { };
   //
   _.reduce = function(collection, iterator, initialValue) {
 	  var acc = initialValue;
-	  if( acc == NaN ) {
-		  acc = collection[0]
+	  if( acc == undefined ) {
+		  acc = collection.shift()
 	  }
 	  for( var index in collection ) {
 		  acc = iterator(acc, collection[index])
