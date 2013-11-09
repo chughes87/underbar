@@ -168,12 +168,28 @@ var _ = { };
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
+	  if(iterator == undefined){
+		  return true;
+	  }
+	  var newIter = function(previousValue, item) {
+		  return previousValue && iterator(item);
+	  }
+	  return Boolean(_.reduce(collection, newIter, true))
     // TIP: Try re-using reduce() here.
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
+	  if(iterator == undefined) {
+		  iterator = function(bool) { return bool; };
+	  }
+	  for( var index in collection ) {
+		  if( iterator(collection[index]) ) {
+			  return true
+		  }
+	  }
+	  return false
     // TIP: There's a very clever way to re-use every() here.
   };
 
@@ -197,11 +213,25 @@ var _ = { };
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+	  for ( var index in arguments ) {
+		  for( var elem in arguments[index] ) {
+			  obj[elem] = arguments[index][elem]
+		  }
+	  }
+	  return obj
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+	  for ( var index in arguments ) {
+		  for( var elem in arguments[index] ) {
+			  if( obj[elem] == undefined ) {
+			  	obj[elem] = arguments[index][elem]
+			  }
+		  }
+	  }
+	  return obj
   };
 
 
@@ -242,6 +272,13 @@ var _ = { };
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+	  var results = [];
+	  return function(){
+		  if( results[arguments[0]] == undefined ) {
+			  results[arguments[0]] = func.apply(this, arguments); 
+		  }
+		  return results[arguments[0]];
+	  }
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -251,6 +288,7 @@ var _ = { };
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+	  setTimeout(function(){func.apply(this, arguments);}, wait);
   };
 
 
@@ -261,6 +299,17 @@ var _ = { };
 
   // Shuffle an array.
   _.shuffle = function(array) {
+	  var rand;
+	  var shuffledArray = [];
+	  function getRandomInt(min, max) {
+		  return Math.floor(Math.random() * (max - min + 1) + min);
+	  }
+	  while( array.length > 0 ) {
+		  rand = getRandomInt(0, array.length-1);
+		  shuffledArray.push(array[rand]);
+		  array.splice(rand,1);
+	  }
+	  return shuffledArray;
   };
 
 
