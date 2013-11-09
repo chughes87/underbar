@@ -143,6 +143,14 @@ var _ = { };
   //   }, 0); // should be 6
   //
   _.reduce = function(collection, iterator, initialValue) {
+	  var acc = initialValue;
+	  if( acc == NaN ) {
+		  acc = collection[0]
+	  }
+	  for( var index in collection ) {
+		  acc = iterator(acc, collection[index])
+	  }
+	  return acc
   };
 
   // Determine if the array or object contains a given value (using `===`).
