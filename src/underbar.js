@@ -125,7 +125,17 @@ var _ = { };
 
   // Calls the method named by methodName on each value in the list.
   _.invoke = function(list, methodName, args) {
-	  _.each(list,eval(methodName+'(this, args)'))
+    var results = [];
+    for( var index in list ){
+      if(typeof(methodName) == 'string'){
+        results[index] = list[index][methodName](args);
+      }else if(typeof(methodName) == 'function'){
+        results[index] = methodName.apply(list[index],args);
+      }else{
+        return "ERR: unexpected type for methodName parameter";
+      }
+    }
+    return results;
   };
 
 
